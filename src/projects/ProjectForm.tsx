@@ -1,10 +1,5 @@
 import { ChangeEvent, SyntheticEvent, useState } from "react";
-import { useDispatch } from "react-redux";
-import { AnyAction } from "redux";
-import { ThunkDispatch } from "redux-thunk";
 import { Project } from "./Project";
-import { saveProject } from "./state/projectActions";
-import { ProjectState } from "./state/projectTypes";
 
 interface ProjectFormProps {
 	project: Project;
@@ -25,16 +20,12 @@ function ProjectForm({ project: initialProject, onCancel }: ProjectFormProps): J
 		budget: "",
 	});
 
-	const dispatch = useDispatch<ThunkDispatch<ProjectState, null, AnyAction>>();
-
 	const handleSubmit = (event: SyntheticEvent) => {
 		event.preventDefault();
 
 		if (!isValid()) {
 			return;
 		}
-
-		dispatch(saveProject(project));
 	};
 
 	const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

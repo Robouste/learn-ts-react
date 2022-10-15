@@ -1,30 +1,41 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AnyAction } from "redux";
-import { ThunkDispatch } from "redux-thunk";
-import { AppState } from "../state";
+import { useEffect, useState } from "react";
+import { Project } from "./Project";
+import { projectAPI } from "./projectAPI";
 import ProjectList from "./ProjectList";
-import { loadProjects } from "./state/projectActions";
-import { ProjectState } from "./state/projectTypes";
 
 function ProjectsPage(): JSX.Element {
-	const loading = useSelector((state: AppState) => state.projectState.loading);
+	// const { projects, loading, error, setCurrentPage, saveProject, saving, savingError } = useProjects();
 
-	const projects = useSelector((state: AppState) => state.projectState.projects);
-
-	const error = useSelector((state: AppState) => state.projectState.error);
-
-	const currentPage = useSelector((state: AppState) => state.projectState.page);
-
-	const dispatch = useDispatch<ThunkDispatch<ProjectState, null, AnyAction>>();
-
-	useEffect(() => {
-		dispatch(loadProjects(1));
-	}, [dispatch]);
+	const [projects, setProjects] = useState<Project[]>([]);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<string | undefined>(undefined);
+	const [currentPage, setCurrentPage] = useState(1);
 
 	const handleMoreClick = () => {
-		dispatch(loadProjects(currentPage + 1));
+		setCurrentPage((currentPage) => currentPage + 1);
 	};
+
+	useEffect(() => {
+		async function loadProjects() {
+			setLoading(true);
+			try {
+				const data = await projectAPI.get(currentPage);
+				setError("");
+				if (currentPage === 1) {
+					setProjects(data);
+				} else {
+					setProjects((projects) => [...projects, ...data]);
+				}
+			} catch (e) {
+				if (e instanceof Error) {
+					setError(e.message);
+				}
+			} finally {
+				setLoading(false);
+			}
+		}
+		loadProjects();
+	}, [currentPage]);
 
 	return (
 		<>
