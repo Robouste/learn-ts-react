@@ -51,7 +51,7 @@ function convertToProjectModels(data: unknown): Project[] {
 }
 
 const projectAPI = {
-	get(page = 1, limit = 20): Promise<Project[]> {
+	get(page = 1, limit = 14): Promise<Project[]> {
 		return fetch(`${url}?_page=${page}&_limit=${limit}&_sort=name`)
 			.then(delay(600))
 			.then(checkStatus)

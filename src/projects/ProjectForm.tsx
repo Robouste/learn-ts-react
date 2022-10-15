@@ -1,9 +1,9 @@
 import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { Project } from "./Project";
+import { useSaveProject } from "./projectHooks";
 
 interface ProjectFormProps {
 	project: Project;
-	onSave: (project: Project) => void;
 	onCancel: () => void;
 }
 
@@ -13,13 +13,15 @@ interface FormErrors {
 	budget: string;
 }
 
-function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormProps): JSX.Element {
+function ProjectForm({ project: initialProject, onCancel }: ProjectFormProps): JSX.Element {
 	const [project, setProject] = useState(initialProject);
 	const [errors, setErrors] = useState<FormErrors>({
 		name: "",
 		description: "",
 		budget: "",
 	});
+
+	const { mutate: saveProject, isLoading } = useSaveProject();
 
 	const handleSubmit = (event: SyntheticEvent) => {
 		event.preventDefault();
@@ -28,7 +30,7 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
 			return;
 		}
 
-		onSave(project);
+		saveProject(project);
 	};
 
 	const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -79,6 +81,7 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
 
 	return (
 		<form className="input-group vertical" onSubmit={handleSubmit}>
+			{isLoading && <span className="toast">Saving...</span>}
 			<label htmlFor="name">Project Name</label>
 			<input type="text" name="name" placeholder="enter name" value={project.name} onChange={handleChange} />
 			{errors.name.length > 0 && (
