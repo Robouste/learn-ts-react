@@ -3,6 +3,7 @@ import { Project } from "./Project";
 
 interface ProjectFormProps {
 	project: Project;
+	onSave: (project: Project) => void;
 	onCancel: () => void;
 }
 
@@ -12,7 +13,7 @@ interface FormErrors {
 	budget: string;
 }
 
-function ProjectForm({ project: initialProject, onCancel }: ProjectFormProps): JSX.Element {
+function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormProps): JSX.Element {
 	const [project, setProject] = useState(initialProject);
 	const [errors, setErrors] = useState<FormErrors>({
 		name: "",
@@ -26,6 +27,8 @@ function ProjectForm({ project: initialProject, onCancel }: ProjectFormProps): J
 		if (!isValid()) {
 			return;
 		}
+
+		onSave(project);
 	};
 
 	const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

@@ -15,6 +15,16 @@ function ProjectsPage(): JSX.Element {
 		setCurrentPage((currentPage) => currentPage + 1);
 	};
 
+	const saveProject = (project: Project) => {
+		projectAPI.put(project).then((updatedProject) => {
+			let updatedProjects = projects.map((p: Project) => {
+				return p.id === project.id ? new Project(updatedProject) : p;
+			});
+
+			setProjects(updatedProjects);
+		});
+	};
+
 	useEffect(() => {
 		async function loadProjects() {
 			setLoading(true);
@@ -53,7 +63,7 @@ function ProjectsPage(): JSX.Element {
 				</div>
 			)}
 
-			<ProjectList projects={projects} />
+			<ProjectList projects={projects} onSave={saveProject} />
 
 			{!loading && !error && (
 				<div className="row">
