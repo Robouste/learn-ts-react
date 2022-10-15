@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Project } from "./Project";
 import { projectAPI } from "./projectAPI";
 
-interface IUseProjects {
+interface IProjectHook {
 	projects: Project[];
 	loading: boolean;
 	error: string | undefined;
@@ -13,7 +13,7 @@ interface IUseProjects {
 	saveProject: (project: Project) => void;
 }
 
-export function useProjects(): IUseProjects {
+export function useProjects(): IProjectHook {
 	const [projects, setProjects] = useState<Project[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | undefined>(undefined);
